@@ -1,0 +1,39 @@
+@host = http://localhost:8080
+@token10s = 2c02b5ce-04d0-4c75-9810-c3e75c397956
+@token30s = a6b3fdef-c107-4970-8ecc-94817ed5968c
+@token2min = 16a661d8-ce97-44b3-a405-a1400d705de8
+
+# -----------------------------------------------------------
+# Rate limiter by token
+# -----------------------------------------------------------
+
+### Request using 10s token
+GET {{host}}
+Headers:
+    API_KEY: {{token10s}}
+Content-Type: application/json
+
+### Request using 30s token
+GET {{host}}
+Headers:
+    API_KEY: {{token30s}}
+Content-Type: application/json
+
+### Request using 2min token
+GET {{host}}
+Headers:
+    API_KEY: {{token2min}}
+Content-Type: application/json
+
+### Request using a normal token
+GET {{host}}
+Headers:
+    API_KEY: 44acd872-daa3-4d5c-a421-c01119a3d30a
+Content-Type: application/json
+
+# -----------------------------------------------------------
+# Rate limiter by ip
+# -----------------------------------------------------------
+
+### Request using ip
+GET {{host}}
