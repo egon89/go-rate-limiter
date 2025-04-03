@@ -1,4 +1,20 @@
 services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "${PORT:-8080}:${PORT:-8080}"
+    environment:
+      - PORT=${PORT}
+      - RATE_LIMIT_IP_COUNT=${RATE_LIMIT_IP_COUNT}
+      - RATE_LIMIT_IP_BLOCK_DURATION=${RATE_LIMIT_IP_BLOCK_DURATION}
+      - RATE_LIMIT_TOKEN_COUNT=${RATE_LIMIT_TOKEN_COUNT}
+      - RATE_LIMIT_TOKEN_BLOCK_DURATION=${RATE_LIMIT_TOKEN_BLOCK_DURATION}
+      - REDIS_HOST=${REDIS_HOST}
+    depends_on:
+      - redis
+
   redis:
     image: redis:alpine
     ports:

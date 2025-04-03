@@ -13,11 +13,8 @@ COPY . .
 RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -C cmd -o goratelimiter
 
 # Stage 2: production go image
-FROM alpine:latest
+FROM scratch
 WORKDIR /app
-
-# install ca-certificates (for https)
-RUN apk --no-cache add ca-certificates
 
 COPY --from=builder /app/cmd/goratelimiter .
 
