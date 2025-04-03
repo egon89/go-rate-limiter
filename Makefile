@@ -40,3 +40,27 @@ requestByIP:
 requestByRandomIP:
 	curl -X GET $(HOST) \
 		-H "X-Forwarded-For: 192.168.0.1"
+
+# Test rate limit
+## using the default network created by docker compose
+test_rate_limit_ip:
+	docker run --rm --network=go-rate-limiter_default williamyeh/hey -n 15 -c 2 -H "X-Forwarded-For: 192.168.0.1" http://app:8080/
+
+test_rate_limit_token:
+	docker run --rm --network=go-rate-limiter_default williamyeh/hey -n 15 -c 2 -H "API_KEY: ac76eaf1-4793-430a-a7fa-23716f10ab81" http://app:8080/
+
+test_rate_limit_ip_batch:
+	@for i in $$(seq 1 10); do \
+		IP="192.168.0.$$(shuf -i 1-255 -n 1)"; \
+		echo "Sending request $$i from $$IP"; \
+		docker run --rm --network=go-rate-limiter_default williamyeh/hey -n 10 -c 5 -H "X-Forwarded-For: $$IP" http://app:8080/; \
+		sleep $$(shuf -i 1-3 -n 1); \
+	done
+
+test_rate_limit_token_batch:
+	@for i in $$(seq 1 10); do \
+		TOKEN="abc$$(shuf -i 1-100 -n 1)"; \
+		echo "Sending request $$i from $$TOKEN"; \
+		docker run --rm --network=go-rate-limiter_default williamyeh/hey -n 20 -c 5 -H "API_KEY: $$TOKEN" http://app:8080/; \
+		sleep $$(shuf -i 1-3 -n 1); \
+	done
