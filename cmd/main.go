@@ -17,8 +17,8 @@ type ApplicationDependenciesInputDto struct {
 	RedisHost                   string
 	RateLimitIpBlockDuration    string
 	RateLimitTokenBlockDuration string
-	RateLimitIpCount            int
-	RateLimitTokenCount         int
+	RateLimitIpMaxRequest       int
+	RateLimitTokenMaxRequest    int
 }
 
 type ApplicationDependenciesOutputDto struct {
@@ -32,8 +32,8 @@ func main() {
 		RedisHost:                   config.RedisHost,
 		RateLimitIpBlockDuration:    config.RateLimitIpBlockDuration,
 		RateLimitTokenBlockDuration: config.RateLimitTokenBlockDuration,
-		RateLimitIpCount:            config.RateLimitIpCount,
-		RateLimitTokenCount:         config.RateLimitTokenCount,
+		RateLimitIpMaxRequest:       config.RateLimitIpMaxRequest,
+		RateLimitTokenMaxRequest:    config.RateLimitTokenMaxRequest,
 	}
 	dependencies := ApplicationDependenciesFactory(input)
 
@@ -65,8 +65,8 @@ func ApplicationDependenciesFactory(input ApplicationDependenciesInputDto) *Appl
 		log.Fatalf("parse rate limit token block duration: %v", err)
 	}
 
-	rateLimitIpService := services.NewRateLimiterIpService(redisAdapter, input.RateLimitIpCount, ipBlockDuration)
-	rateLimitTokenService := services.NewRateLimiterTokenService(redisAdapter, input.RateLimitTokenCount, tokenBlockDuration)
+	rateLimitIpService := services.NewRateLimiterIpService(redisAdapter, input.RateLimitIpMaxRequest, ipBlockDuration)
+	rateLimitTokenService := services.NewRateLimiterTokenService(redisAdapter, input.RateLimitTokenMaxRequest, tokenBlockDuration)
 
 	rateLimitStrategySelector := selectors.NewRateLimiterStrategySelector(
 		[]services.RateLimiterService{

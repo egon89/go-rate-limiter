@@ -15,7 +15,6 @@ RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -C cmd -o goratelimiter
 # Stage 2: production go image
 FROM scratch
 
-# Define build-time arguments
 ENV PORT=${PORT}
 
 WORKDIR /app

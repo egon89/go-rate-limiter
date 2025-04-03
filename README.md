@@ -60,9 +60,9 @@ make down
 
 ## Rate limiter feature
 The rate limiter is implemented as a middleware that can be injected into the web server. The rate limiter itself needs to be configured with the following environment variables:
-- **RATE_LIMIT_IP_COUNT**: Maximum number of requests per second per IP address. Default: 5
+- **RATE_LIMIT_IP_MAX_REQUEST**: Maximum number of requests per second per IP address. Default: 5
 - **RATE_LIMIT_IP_BLOCK_TIME**: Block time for IP address in seconds. Default: 300 seconds (5 minutes)
-- **RATE_LIMIT_TOKEN_COUNT**: Maximum number of requests per second per token. Default: 10
+- **RATE_LIMIT_TOKEN_MAX_REQUEST**: Maximum number of requests per second per token. Default: 10
 - **RATE_LIMIT_TOKEN_BLOCK_TIME**: Block time for token in seconds. Default: 300 seconds (5 minutes)
 
 Custom tokens can be set in the `customTokenBlockDuration` function with a desired expiration time.
@@ -96,12 +96,12 @@ You can use the predefined requests in the `Makefile` and `api.http` files to te
 - **api.http**: you will need the `REST Client` extension.
 
 
-## Integration test for rate limiter feature
-To run the integration test, you need to have Docker and Go installed on your machine. The integration test uses the `testcontainers` library to create a Redis container and run the tests though http requests.
+## Integration test
+To run the integration tests, ensure that Docker and Go are installed on your machine. The tests use the `testcontainers` library to create a Redis container and execute the tests through HTTP requests.
 
 To run the integration test, run the following command in the root directory of the project:
 ```bash
 make integration-test
 ```
 
-> ⚠️ The integration test has scenarios for waiting some ip and token to be blocked and then unblocked. Because of that, the test can take a while to finish.
+> ⚠️ The integration tests include scenarios where IPs and tokens are blocked and then unblocked. As a result, the integration test may take some time to complete.

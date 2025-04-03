@@ -13,9 +13,9 @@ type RateLimiterTokenService struct {
 	rateLimiterBaseService
 }
 
-func NewRateLimiterTokenService(storage ports.RateLimiterStorage, rateLimitCount int, rateLimitBlockDuration time.Duration) *RateLimiterTokenService {
+func NewRateLimiterTokenService(storage ports.RateLimiterStorage, rateLimitMaxRequest int, rateLimitBlockDuration time.Duration) *RateLimiterTokenService {
 	return &RateLimiterTokenService{
-		rateLimiterBaseService: *NewRateLimiterBaseService(storage, rateLimitCount, rateLimitBlockDuration),
+		rateLimiterBaseService: *NewRateLimiterBaseService(storage, rateLimitMaxRequest, rateLimitBlockDuration),
 	}
 }
 
@@ -23,7 +23,7 @@ func NewRateLimiterTokenService(storage ports.RateLimiterStorage, rateLimitCount
 func (r *RateLimiterTokenService) Allow(ctx context.Context, key string) (bool, error) {
 	rateLimitBlockDuration := r.getRateLimitBlockDuration(key)
 
-	log.Printf("[rate-limit-token-service] limit count: %d, block duration: %v\n", r.rateLimitCount, rateLimitBlockDuration)
+	log.Printf("[rate-limit-token-service] limit count: %d, block duration: %v\n", r.rateLimitMaxRequest, rateLimitBlockDuration)
 	log.Printf("[rate-limit-token-service] key: %s\n", key)
 
 	count, err := r.storage.Increment(ctx, key)
@@ -42,7 +42,7 @@ func (r *RateLimiterTokenService) Allow(ctx context.Context, key string) (bool, 
 		}
 	}
 
-	if count > r.rateLimitCount {
+	if count > r.rateLimitMaxRequest {
 		log.Printf("[rate-limit-token-service] the key %s has reached the limit count\n", key)
 
 		return false, nil

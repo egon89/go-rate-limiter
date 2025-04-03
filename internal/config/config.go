@@ -10,9 +10,9 @@ import (
 
 var (
 	Port                        string
-	RateLimitIpCount            int
+	RateLimitIpMaxRequest       int
 	RateLimitIpBlockDuration    string
-	RateLimitTokenCount         int
+	RateLimitTokenMaxRequest    int
 	RateLimitTokenBlockDuration string
 	RedisHost                   string
 )
@@ -23,9 +23,9 @@ func LoadEnv() {
 	}
 
 	Port = GetEnv("PORT", "8080")
-	RateLimitIpCount = GetEnvAsInt("RATE_LIMIT_IP_COUNT", 5)
+	RateLimitIpMaxRequest = GetEnvAsInt("RATE_LIMIT_IP_MAX_REQUEST", 5)
 	RateLimitIpBlockDuration = GetEnv("RATE_LIMIT_IP_BLOCK_DURATION", "300s")
-	RateLimitTokenCount = GetEnvAsInt("RATE_LIMIT_TOKEN_COUNT", 10)
+	RateLimitTokenMaxRequest = GetEnvAsInt("RATE_LIMIT_TOKEN_MAX_REQUEST", 10)
 	RateLimitTokenBlockDuration = GetEnv("RATE_LIMIT_TOKEN_BLOCK_DURATION", "300s")
 	RedisHost = GetEnv("REDIS_HOST", "")
 }

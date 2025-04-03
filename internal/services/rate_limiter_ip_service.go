@@ -10,9 +10,9 @@ type RateLimiterIpService struct {
 	rateLimiterBaseService
 }
 
-func NewRateLimiterIpService(storage ports.RateLimiterStorage, rateLimitCount int, rateLimitBlockDuration time.Duration) *RateLimiterIpService {
+func NewRateLimiterIpService(storage ports.RateLimiterStorage, rateLimitMaxRequest int, rateLimitBlockDuration time.Duration) *RateLimiterIpService {
 	return &RateLimiterIpService{
-		rateLimiterBaseService: *NewRateLimiterBaseService(storage, rateLimitCount, rateLimitBlockDuration),
+		rateLimiterBaseService: *NewRateLimiterBaseService(storage, rateLimitMaxRequest, rateLimitBlockDuration),
 	}
 }
 

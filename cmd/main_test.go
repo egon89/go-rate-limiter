@@ -31,15 +31,15 @@ func TestRateLimiterIT(t *testing.T) {
 	rateLimitIpBlockDuration, _ := time.ParseDuration(rateLimitIpBlockDurationStr)
 	rateLimitTokenBlockDurationStr := "5s"
 	rateLimitTokenBlockDuration, _ := time.ParseDuration(rateLimitTokenBlockDurationStr)
-	rateLimitIpCount := 5
-	rateLimitTokenCount := 10
+	rateLimitIpMaxRequest := 5
+	rateLimitTokenMaxRequest := 10
 
 	input := ApplicationDependenciesInputDto{
 		RedisHost:                   fmt.Sprintf("%s:%s", redisContainerHost, redisPort.Port()),
 		RateLimitIpBlockDuration:    rateLimitIpBlockDurationStr,
 		RateLimitTokenBlockDuration: rateLimitTokenBlockDurationStr,
-		RateLimitIpCount:            rateLimitIpCount,
-		RateLimitTokenCount:         rateLimitTokenCount,
+		RateLimitIpMaxRequest:       rateLimitIpMaxRequest,
+		RateLimitTokenMaxRequest:    rateLimitTokenMaxRequest,
 	}
 
 	dependencies := ApplicationDependenciesFactory(input)
@@ -52,10 +52,10 @@ func TestRateLimiterIT(t *testing.T) {
 
 	t.Run("Given a token", func(t *testing.T) {
 		t.Run("Should rate limit requests", func(t *testing.T) {
-			for i := 1; i <= rateLimitTokenCount+1; i++ {
+			for i := 1; i <= rateLimitTokenMaxRequest+1; i++ {
 				resp := makeRequestWithToken(t, server.URL, "f2bb9a91-2c93-4613-ab54-7728792a6280")
 
-				if i <= rateLimitTokenCount {
+				if i <= rateLimitTokenMaxRequest {
 					assert.Equal(t, http.StatusOK, resp.StatusCode)
 				} else {
 					assert.Equal(t, http.StatusTooManyRequests, resp.StatusCode)
@@ -65,7 +65,7 @@ func TestRateLimiterIT(t *testing.T) {
 
 		t.Run("Should reset rate limit after block duration", func(t *testing.T) {
 			token := "bab0e627-c1f7-474f-b0cf-7b78747f2f40"
-			batchTokenRequest(t, server.URL, rateLimitTokenCount, token)
+			batchTokenRequest(t, server.URL, rateLimitTokenMaxRequest, token)
 
 			resp := makeRequestWithToken(t, server.URL, token)
 			assert.Equal(t, http.StatusTooManyRequests, resp.StatusCode)
@@ -79,10 +79,10 @@ func TestRateLimiterIT(t *testing.T) {
 
 	t.Run("Given an ip", func(t *testing.T) {
 		t.Run("Should rate limit requests", func(t *testing.T) {
-			for i := 1; i <= rateLimitIpCount+1; i++ {
+			for i := 1; i <= rateLimitIpMaxRequest+1; i++ {
 				resp := makeRequestWithIp(t, server.URL, "192.168.0.1")
 
-				if i <= rateLimitIpCount {
+				if i <= rateLimitIpMaxRequest {
 					assert.Equal(t, http.StatusOK, resp.StatusCode)
 				} else {
 					assert.Equal(t, http.StatusTooManyRequests, resp.StatusCode)
@@ -92,7 +92,7 @@ func TestRateLimiterIT(t *testing.T) {
 
 		t.Run("Should reset rate limit after block duration", func(t *testing.T) {
 			ip := "192.168.0.1"
-			batchIpRequest(t, server.URL, rateLimitIpCount, ip)
+			batchIpRequest(t, server.URL, rateLimitIpMaxRequest, ip)
 
 			resp := makeRequestWithIp(t, server.URL, ip)
 			assert.Equal(t, http.StatusTooManyRequests, resp.StatusCode)
