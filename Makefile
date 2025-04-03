@@ -35,3 +35,8 @@ requestByTokenRegular:
 # Request using IP
 requestByIP:
 	curl -X GET $(HOST)
+
+# Request using random IP
+requestByRandomIP:
+	curl -X GET $(HOST) \
+		-H "X-Forwarded-For: 192.168.0.1"

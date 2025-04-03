@@ -85,6 +85,12 @@ Curl using local IP:
 curl -X GET http://localhost:8080
 ```
 
+Curl using custom IP:
+```bash
+curl -X GET http://localhost:8080 \
+		-H "X-Forwarded-For: 192.168.0.1"
+```
+
 You can use the predefined requests in the `Makefile` and `api.http` files to test the rate limiter.
 - **Makefile**: `make requestByToken2Min`
 - **api.http**: you will need the `REST Client` extension.

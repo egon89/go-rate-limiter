@@ -58,7 +58,7 @@ func (r *RateLimiterMiddleware) getStrategyValues(request *http.Request) (string
 		return token, service, err
 	}
 
-	ip := utils.GetIpAddress(request)
+	ip, _ := utils.GetIpAddress(request)
 	if ip != "" {
 		log.Printf("[middleware] asking for ip rate limiter service: %s\n", ip)
 		service, err := r.rateLimiterServiceStrategySelector.Select(services.IP)
