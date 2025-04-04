@@ -41,7 +41,7 @@ func NewRateLimiterBaseService(storage ports.RateLimiterStorage, rateLimitMaxReq
 }
 
 func (r *rateLimiterBaseService) Allow(ctx context.Context, key string) (bool, error) {
-	log.Printf("[rate-limit-service] limit count: %d, block duration: %v\n", r.rateLimitMaxRequest, r.rateLimitBlockDuration)
+	log.Printf("[rate-limit-service] limit max request: %d, block duration: %v\n", r.rateLimitMaxRequest, r.rateLimitBlockDuration)
 	log.Printf("[rate-limit-service] key: %s\n", key)
 
 	count, err := r.storage.Increment(ctx, key)
@@ -61,7 +61,7 @@ func (r *rateLimiterBaseService) Allow(ctx context.Context, key string) (bool, e
 	}
 
 	if count > r.rateLimitMaxRequest {
-		log.Printf("[rate-limit-service] the key %s has reached the limit count\n", key)
+		log.Printf("[rate-limit-service] the key %s has reached the limit of %d request(s)\n", key, r.rateLimitMaxRequest)
 
 		return false, nil
 	}

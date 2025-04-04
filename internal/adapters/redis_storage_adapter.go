@@ -43,7 +43,7 @@ func (r *RedisAdapter) GetRequestCount(ctx context.Context, key string) (int, er
 func (r *RedisAdapter) Increment(ctx context.Context, key string) (int, error) {
 	count, err := r.client.Incr(ctx, r.getRateLimitKey(key)).Result()
 	if err != nil {
-		log.Printf("increment request count error for key %s: %v\n", key, err)
+		log.Printf("[redis-adapter] increment request count error for key %s: %v\n", key, err)
 
 		return 0, err
 	}
@@ -52,7 +52,7 @@ func (r *RedisAdapter) Increment(ctx context.Context, key string) (int, error) {
 }
 
 func (r *RedisAdapter) Expire(ctx context.Context, key string, window time.Duration) error {
-	log.Printf("setting expiration for key %s: %v\n", key, window)
+	log.Printf("[redis-adapter] setting expiration for key %s: %v\n", key, window)
 
 	err := r.client.Expire(ctx, r.getRateLimitKey(key), window).Err()
 	if err != nil {
