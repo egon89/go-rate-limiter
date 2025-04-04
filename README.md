@@ -92,9 +92,8 @@ curl -X GET http://localhost:8080 \
 ```
 
 You can use the predefined requests in the `Makefile` and `api.http` files to test the rate limiter.
-- **Makefile**: `make requestByToken2Min`
+- **Makefile**: `make request-token-2-min`
 - **api.http**: you will need the `REST Client` extension.
-
 
 ## Integration test
 To run the integration tests, ensure that Docker and Go are installed on your machine. The tests use the `testcontainers` library to create a Redis container and execute the tests through HTTP requests.
@@ -105,3 +104,18 @@ make integration-test
 ```
 
 > ⚠️ The integration tests include scenarios where IPs and tokens are blocked and then unblocked. As a result, the integration test may take some time to complete.
+
+## Load testing
+To run the load tests, ensure that Docker is installed on your machine. We will use the `hey` tool to perform the load testing. The tests will be executed against the rate limiter to check its performance under high load.
+
+Start the project using Docker:
+```bash
+make run
+```
+
+In another terminal, run any command with the prefix `load-test-*` in the `Makefile` to perform the load test. For example:
+```bash
+make load-test-ip
+```
+
+**Hey tool**: the `-n` flag specifies the total number of requests to be sent and the `-c` flag specifies the number of concurrent requests.
